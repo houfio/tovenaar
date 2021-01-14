@@ -1,0 +1,86 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Answer {
+  asset: String!
+  collection: AnswerCollection!
+  id: String!
+  question: Question!
+}
+
+type AnswerCollection {
+  answers: [Answer!]!
+  createdAt: Time!
+  email: String!
+  id: String!
+}
+
+type Authentication {
+  token: String!
+  user: User!
+}
+
+type Mutation {
+  createCollection(input: CollectionInput!): AnswerCollection!
+  deleteCollection(input: IdInput!): AnswerCollection!
+  deleteQuestion(input: IdInput!): Question!
+  login(input: AuthenticationInput!): Authentication!
+  register(input: AuthenticationInput!): Authentication!
+  upsertQuestion(input: QuestionInput!): Question!
+}
+
+type Query {
+  answers: [AnswerCollection!]!
+  me: User
+  questions: [Question!]!
+}
+
+type Question {
+  id: String!
+  order: Int!
+  text: String!
+}
+
+type Subscription {
+  answerSubmitted: AnswerCollection!
+}
+
+type User {
+  email: String!
+  id: String!
+}
+
+input AnswerInput {
+  file: Upload!
+  questionId: String!
+}
+
+input AuthenticationInput {
+  email: String!
+  password: String!
+}
+
+input CollectionInput {
+  answers: [AnswerInput!]!
+  email: String!
+}
+
+input IdInput {
+  id: String!
+}
+
+input QuestionInput {
+  id: String
+  order: Int!
+  text: String!
+}
+
+
+scalar Upload
+
+scalar Time

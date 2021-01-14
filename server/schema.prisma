@@ -1,0 +1,37 @@
+datasource db {
+  provider = "postgres"
+  url      = "postgresql://username:password@localhost:5432/tovenaar"
+}
+
+generator db {
+  provider = "go run github.com/prisma/prisma-client-go"
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+}
+
+model Question {
+  id      String   @id @default(cuid())
+  text    String
+  order   Int
+  answers Answer[]
+}
+
+model AnswerCollection {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  email     String
+  answers   Answer[]
+}
+
+model Answer {
+  id           String           @id @default(cuid())
+  asset        String
+  collection   AnswerCollection @relation(fields: [collectionId], references: [id])
+  collectionId String
+  question     Question         @relation(fields: [questionId], references: [id])
+  questionId   String
+}

@@ -1,0 +1,82 @@
+directive @goField(forceResolver: Boolean) on FIELD_DEFINITION
+
+scalar Upload
+scalar Time
+
+type User {
+  id: String!
+  email: String!
+}
+
+type Question {
+  id: String!
+  text: String!
+  order: Int!
+}
+
+type Answer {
+  id: String!
+  asset: String!
+  collection: AnswerCollection! @goField(forceResolver: true)
+  question: Question! @goField(forceResolver: true)
+}
+
+type AnswerCollection {
+  id: String!
+  createdAt: Time!
+  email: String!
+  answers: [Answer!]! @goField(forceResolver: true)
+}
+
+type Query {
+  me: User
+  questions: [Question!]!
+  answers: [AnswerCollection!]!
+}
+
+type Authentication {
+  token: String!
+  user: User!
+}
+
+directive @notEmpty on INPUT_FIELD_DEFINITION
+directive @positive on INPUT_FIELD_DEFINITION
+directive @email on INPUT_FIELD_DEFINITION
+
+input AuthenticationInput {
+  email: String! @notEmpty @email
+  password: String! @notEmpty
+}
+
+input QuestionInput {
+  id: String
+  text: String! @notEmpty
+  order: Int! @positive
+}
+
+input CollectionInput {
+  email: String! @email
+  answers: [AnswerInput!]!
+}
+
+input AnswerInput {
+  questionId: String!
+  file: Upload!
+}
+
+input IdInput {
+  id: String!
+}
+
+type Mutation {
+  login(input: AuthenticationInput!): Authentication!
+  register(input: AuthenticationInput!): Authentication!
+  upsertQuestion(input: QuestionInput!): Question!
+  deleteQuestion(input: IdInput!): Question!
+  createCollection(input: CollectionInput!): AnswerCollection!
+  deleteCollection(input: IdInput!): AnswerCollection!
+}
+
+type Subscription {
+  answerSubmitted: AnswerCollection!
+}
